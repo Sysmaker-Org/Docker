@@ -1,0 +1,22 @@
+# For GitLab to build production images during CI process (rarely change)
+version: '3.7'
+
+services:
+  sysmaker-app:
+    build:
+      context: .
+      target: sysmaker-app
+    image: sysmaker/sysmaker-app:${IMAGE_TAG}
+
+
+  sysmaker-api:
+    build:
+      context: .
+      target: sysmaker-api
+    image: sysmaker/sysmaker-api:${IMAGE_TAG}
+
+  sysmaker-single:
+    build:
+      context: .
+      target: sysmaker-single
+    image: sysmaker/sysmaker:${IMAGE_TAG}

@@ -1,0 +1,36 @@
+# Single Sysmaker image (APP & API in single image)
+version: '3.7'
+
+# === configs ===
+x-images:
+  &images
+  IMAGE_NODE: node:${VER_NODE}
+  IMAGE_NGINX: nginx:${VER_NGINX}
+#  IMAGE_SYSMAKER_ENV: sysmaker/sysmaker-env:${IMAGE_TAG}  # prefer using Docker Hub latest one
+
+x-https:
+  &https
+  - ./misc/nginx-confd/single.https.conf:/etc/nginx/conf.d/default.conf:ro
+  - ./misc/ssl/:/etc/nginx/conf.d/ssl/:ro
+
+#x-http:
+#  &http
+#  - ./misc/nginx-confd/single.http.conf:/etc/nginx/conf.d/default.conf:ro
+#  - ./misc/ssl/restore-ip.cloudflare:/etc/nginx/conf.d/ssl/restore-ip.cloudflare:ro
+
+
+# === services ===
+services:
+  sysmaker-single:
+    build:
+      context: .
+      target: sysmaker-single
+      args: *images
+    image: sysmaker/sysmaker:${IMAGE_TAG}
+    container_name: Sysmaker
+    hostname: Sysmaker
+
+    volumes: *https
+    ports:
+      - '80:80'
+      - '443:443'
