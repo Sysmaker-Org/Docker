@@ -13,10 +13,10 @@ x-https:
   - ./misc/nginx-confd/single.https.conf:/etc/nginx/conf.d/default.conf:ro
   - ./misc/ssl/:/etc/nginx/conf.d/ssl/:ro
 
-#x-http:
-#  &http
-#  - ./misc/nginx-confd/single.http.conf:/etc/nginx/conf.d/default.conf:ro
-#  - ./misc/ssl/restore-ip.cloudflare:/etc/nginx/conf.d/ssl/restore-ip.cloudflare:ro
+x-http:
+  &http
+  - ./misc/nginx-confd/single.http.conf:/etc/nginx/conf.d/default.conf:ro
+  - ./misc/ssl/restore-ip.cloudflare:/etc/nginx/conf.d/ssl/restore-ip.cloudflare:ro
 
 
 # ===== services =====
@@ -30,7 +30,7 @@ services:
     container_name: Sysmaker
     hostname: Sysmaker
 
-    volumes: *https
+    volumes: *http
     ports:
       - '80:80'
       - '443:443'
