@@ -1,10 +1,10 @@
-# === default images ===
-ARG IMAGE_NODE=node:alpine
-ARG IMAGE_NGINX=nginx:alpine
+# ===== default images =====
 ARG IMAGE_SYSMAKER_ENV=sysmaker/sysmaker-env:latest
+ARG IMAGE_NODE=node:lts-alpine
+ARG IMAGE_NGINX=nginx:alpine
 
-# === base stage ===
-FROM $IMAGE_SYSMAKER_ENV as base
+# ===== build stage =====
+FROM $IMAGE_SYSMAKER_ENV AS base
 LABEL sysmaker="build"
 
 ARG IMAGE_SYSMAKER_ENV
@@ -13,15 +13,15 @@ COPY sysmaker/ misc/nginx-confd/app.conf ./
 
 RUN echo "Image: $IMAGE_SYSMAKER_ENV" \
     && npm run sysmaker:build \
-    && rm -rf package-lock.json node_modules \
+    && mv package-lock.json old-package-lock.json && mv node_modules/ old-node_modules/ \
     && find dist/apps/sysmaker \( -name '*.js' -o -name '*.css' \) -type f -exec gzip -9 -k "{}" \; \
     \
     && npm install @nestjs/common @nestjs/core @nestjs/platform-express reflect-metadata rxjs tslib \
     && cp -r node_modules/ dist/apps/api/
 
 
-# === APP ===
-FROM $IMAGE_NGINX as sysmaker-app
+# ===== APP =====
+FROM $IMAGE_NGINX AS sysmaker-app
 LABEL maintainer="LouisSung <ls@sysmaker.org>" \
       description="Sysmaker APP" \
       sysmaker="app"
@@ -33,8 +33,8 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
 
-# === API ===
-FROM $IMAGE_NODE as sysmaker-api
+# ===== API =====
+FROM $IMAGE_NODE AS sysmaker-api
 LABEL maintainer="LouisSung <ls@sysmaker.org>" \
       description="Sysmaker API" \
       sysmaker="api"
@@ -47,8 +47,8 @@ EXPOSE 80
 CMD ["node", "/sysmaker/api/main.js"]
 
 
-# === SINGLE ===
-FROM $IMAGE_NODE as sysmaker-single
+# ===== SINGLE =====
+FROM $IMAGE_NODE AS sysmaker-single
 LABEL maintainer="LouisSung <ls@sysmaker.org>" \
       description="Sysmaker" \
       sysmaker="single"

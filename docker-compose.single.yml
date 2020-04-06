@@ -1,7 +1,7 @@
 # Single Sysmaker image (APP & API in single image)
 version: '3.7'
 
-# === configs ===
+# ===== configs =====
 x-images:
   &images
   IMAGE_NODE: node:${VER_NODE}
@@ -19,7 +19,7 @@ x-https:
 #  - ./misc/ssl/restore-ip.cloudflare:/etc/nginx/conf.d/ssl/restore-ip.cloudflare:ro
 
 
-# === services ===
+# ===== services =====
 services:
   sysmaker-single:
     build:

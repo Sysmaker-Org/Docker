@@ -6,22 +6,24 @@ LABEL maintainer="LouisSung <ls@sysmaker.org>" \
 ARG IMAGE_CYPRESS
 WORKDIR /sysmaker
 COPY sysmaker/package*.json ./
+COPY misc/pages/* ./pages/
 
 RUN echo "Image: $IMAGE_CYPRESS" \
     && apt-get update && apt-get install -y --no-install-recommends \
-         bash curl git rsync tree libcanberra-gtk3-module \
+         bash bc curl jq git rsync tree libcanberra-gtk3-module \
          apt-transport-https ca-certificates gnupg2 software-properties-common \
     && curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
     && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" \
     && apt-get update && apt-get install -y --no-install-recommends \
          docker-ce=5:19.03.8~3-0~debian-buster docker-ce-cli=5:19.03.8~3-0~debian-buster containerd.io \
-    && rm -rf /var/lib/apt/lists/* \
     && curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
     && chmod +x /usr/local/bin/docker-compose \
+    && rm -rf /var/lib/apt/lists/* \
     \
     && npm install --ignore-scripts --no-audit --loglevel info \
     && npm audit fix --ignore-scripts --verbose \
-    && npm run postinstall
+    && npm run postinstall \
+    && $(npm bin)/cypress install
 
 SHELL ["/bin/bash", "-c"]
 CMD ["bash", "-c", "exit 0"]

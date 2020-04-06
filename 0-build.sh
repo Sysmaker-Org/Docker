@@ -22,7 +22,7 @@ function copy_folder_and_update_image_tag() {  # $1=TARGET_DIR $2=CI_COMMIT_BRAN
 }
 # ===== end def func =====
 
-# use root folder as the target dir to tag (in case git submodule is used)
+# use root folder as the target dir to copy from and to get tag version (in case git submodule is used)
 # provide `$CI_COMMIT_BRANCH` since detached HEAD is used during the gitlab ci process
 rm -rf sysmaker/
 copy_folder_and_update_image_tag '../../' "$CI_COMMIT_BRANCH"

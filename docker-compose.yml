@@ -1,7 +1,7 @@
 # Normal Sysmaker images (APP + API + Nginx)
 version: '3.7'
 
-# === configs ===
+# ===== configs =====
 x-images:
   &images
   IMAGE_NODE: node:${VER_NODE}
@@ -18,7 +18,7 @@ x-https:
 #  - ./misc/nginx-confd/normal.http.conf:/etc/nginx/conf.d/default.conf:ro
 #  - ./misc/ssl/restore-ip.cloudflare:/etc/nginx/conf.d/ssl/restore-ip.cloudflare:ro
 
-# === services ===
+# ===== services =====
 services:
   sysmaker-app:
     build:
